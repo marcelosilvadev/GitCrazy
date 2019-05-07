@@ -1,6 +1,6 @@
 # git_crazy
 
-A new Flutter application for list users and repositories.
+A new Flutter application for list users and repositories GitHub.
 
 ## Getting Started
 
