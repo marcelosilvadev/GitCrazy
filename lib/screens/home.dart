@@ -104,9 +104,9 @@ class _HomeState extends State<Home> {
           itemBuilder: (context, index) {
             return InkWell(
                 onTap: () {
+                  loading(context);
                   var user = snapshot.data["items"][index]["login"];
                   getRepositories(user).then((res){
-                    print("Entrei");
                     print(res);
                     Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => Repositories(user, res)));
@@ -138,4 +138,19 @@ class _HomeState extends State<Home> {
                 )));
           });
     }
+
+  Future<Widget> loading(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(
+                  Colors.black),
+              strokeWidth: 5.0,
+            ),
+          );
+        });
+  }
+
 }

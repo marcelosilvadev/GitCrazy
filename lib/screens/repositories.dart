@@ -1,7 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class Repositories extends StatelessWidget {
   final String user;
@@ -12,7 +10,7 @@ class Repositories extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Repositorios"),
+          title: Text("Repositórios"),
           centerTitle: true,
         ),
         body: Column(
@@ -31,7 +29,9 @@ class Repositories extends StatelessWidget {
 
   Widget _repositoriesCard(BuildContext context, int index, List repo) {
     return InkWell(
-        onTap: () {},
+        onTap: () {
+          _launchURL(repo[index]["html_url"]);
+        },
         child: Card(
           child: Row(
             children: <Widget>[
@@ -49,22 +49,36 @@ class Repositories extends StatelessWidget {
                             fontSize: 17.0,
                             fontWeight: FontWeight.bold),
                       ),
-                      Text(
-                        "${repo[index]["description"] == null ? "Sem Descriçao" : repo[index]["description"]}",
-                        style: TextStyle(fontSize: 15),
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Icon(Icons.language, size: 15,),
-                          Text("${repo[index]["language"]}"),
-                          Divider(
-                            color: Colors.red,
-                          ),
-                          Icon(Icons.star, size: 15,),
-                          Text("${repo[index]["watchers_count"]}"),
-                          Icon(Icons.device_hub, size: 15,),
-                          Text("${repo[index]["forks_count"]}"),
-                        ],
+                      Padding(
+                          padding: EdgeInsets.only(top: 5),
+                          child: Text(
+                            "${repo[index]["description"] == null ? "Sem Descriçao" : repo[index]["description"]}",
+                            style: TextStyle(fontSize: 15),
+                          )),
+                      Padding(
+                        padding: EdgeInsets.only(top: 5),
+                        child: Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.language,
+                              size: 15,
+                            ),
+                            Text(
+                                " ${repo[index]["language"] == null ? "N/D" : repo[index]["language"]}"),
+                            VerticalDivider(),
+                            Icon(
+                              Icons.star,
+                              size: 15,
+                            ),
+                            Text(" ${repo[index]["watchers_count"]}"),
+                            VerticalDivider(),
+                            Icon(
+                              Icons.device_hub,
+                              size: 15,
+                            ),
+                            Text(" ${repo[index]["forks_count"]}"),
+                          ],
+                        ),
                       )
                     ],
                   ),
@@ -73,5 +87,13 @@ class Repositories extends StatelessWidget {
             ],
           ),
         ));
+  }
+
+  _launchURL(url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
